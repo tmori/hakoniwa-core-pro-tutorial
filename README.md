@@ -13,7 +13,7 @@
 ## 前提環境
 
 *   **OS**: Ubuntu 24.04 LTS 以上
-*   **Python**: 3.12 以上
+*   **Python**: 3.12 
     *   `hakoniwa-pdu`のインストール:
         ```bash
         pip install hakoniwa-pdu
