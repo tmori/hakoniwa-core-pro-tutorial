@@ -25,22 +25,31 @@
 以下のコマンドを実行して、必要なパッケージをインストールしてください。
 
 ```bash
+echo "deb [trusted=yes] https://hakoniwalab.github.io/apt stable main" \
+ | sudo tee /etc/apt/sources.list.d/hakoniwa.list
+```
+
+```bash
 sudo apt update
+```
+
+```bash
 sudo apt install -y git cmake build-essential
 ```
 
+```bash
+sudo apt install -y hakoniwa-core-full
+```
+
+```bash
+sudo usermod -aG hakoniwa <your-username>
+```
+
+```bash
+newgrp hakoniwa
+```
+
 ## ビルド方法
-
-### 依存ライブラリ
-
-*   Hakoniwa Core Pro (`hakoniwa-core`)
-    *   インストール方法は[hakoniwa-core-pro](https://github.com/hakoniwalab/hakoniwa-core-pro)を参照してください。
-    *   aptでのインストール（予定）：
-        ```bash
-        sudo apt install hakoniwa-core
-        ```
-
-### ビルド手順
 
 1.  ビルド用のディレクトリを作成します。
     ```bash
@@ -71,7 +80,7 @@ sudo apt install -y git cmake build-essential
 1.  **端末A**でアセットを起動します。
 
     ```bash
-    ./build/examples/hello_world/hello_world HelloWorld examples/hello_world/custom.json 100
+    ./build/hello_world/hello_world HelloWorld examples/hello_world/custom.json 20
     ```
 
 2.  **端末B**でシミュレーションを開始します。
