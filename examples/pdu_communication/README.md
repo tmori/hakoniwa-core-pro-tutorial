@@ -52,11 +52,19 @@ hakoniwa-core-cpp-clientでビルドおよびインストール完了後、以�
 成功すると、以下のログが出力され、待機状態になります。
 
 ```sh
-INFO: shmget() key=255 size=1129352 
+INFO: hako::init() : type: mmap
+INFO: HakoProData::init() : type: mmap
+INFO: register_master_extension()
+INFO: hako::create_master()
+INFO: register_asset_extension()
+INFO: hako_asset_register :Writer
 INFO: hako_conductor thread start
 Robot: Robot, PduWriter: Robot_pos
-channel_id: 1 pdu_size: 48
-INFO: Robot create_lchannel: logical_id=1 real_id=0 size=48
+channel_id: 1 pdu_size: 72
+INFO: Robot create_lchannel: logical_id=1 real_id=0 size=72
+Robot: Robot, PduReader: Robot_motor
+channel_id: 0 pdu_size: 72
+INFO: Robot create_lchannel: logical_id=0 real_id=1 size=72
 INFO: asset(Writer) is registered.
 WAIT START
 ```
@@ -72,16 +80,22 @@ WAIT START
 成功すると、以下のログが出力され、待機状態になります。
 
 ```sh
+INFO: hako_asset_register :Reader
+INFO: hako::create_asset_controller() : type: mmap
+INFO: HakoProData::init() : type: mmap
+INFO: register_master_extension()
+INFO: register_asset_extension()
 Robot: Robot, PduWriter: Robot_motor
-channel_id: 0 pdu_size: 48
-INFO: Robot create_lchannel: logical_id=0 real_id=1 size=48
+channel_id: 0 pdu_size: 72
+Robot: Robot, PduReader: Robot_pos
+channel_id: 1 pdu_size: 72
 INFO: asset(Reader) is registered.
 WAIT START
 ```
 
 **端末Cでの手順:**
 
-箱庭アセットのシミュレーションを開始するためには、別の端末Bで、以下のコマンドを実行します。
+箱庭アセットのシミュレーションを開始するためには、別の端末Cで、以下のコマンドを実行します。
 
 ```sh
 hako-cmd start
@@ -93,33 +107,45 @@ hako-cmd start
 端末A：プラントモデル側
 
 ```sh
-1000000: motor data(1001.000000, 1002.000000, 1003.000000)
-3000000: motor data(1002.000000, 1003.000000, 1004.000000)
-5000000: motor data(1003.000000, 1004.000000, 1005.000000)
-7000000: motor data(1004.000000, 1005.000000, 1006.000000)
-9000000: motor data(1005.000000, 1006.000000, 1007.000000)
-11000000: motor data(1006.000000, 1007.000000, 1008.000000)
-13000000: motor data(1007.000000, 1008.000000, 1009.000000)
-15000000: motor data(1008.000000, 1009.000000, 1010.000000)
-17000000: motor data(1009.000000, 1010.000000, 1011.000000)
-19000000: motor data(1010.000000, 1011.000000, 1012.000000)
-21000000: motor data(1011.000000, 1012.000000, 1013.000000)
+INFO: asset(Writer) is registered.
+WAIT START
+INFO: HakoMasterData::load() called: master_ext_ = 0x56509102ca00
+INFO: HakoProData::on_pdu_data_load()
+INFO: HakoProData::on_pdu_data_load() loaded memory
+LOADED: PDU DATA
+INFO: PDU is created successfully!
+WAIT RUNNING
+PDU CREATED
+INFO: start simulation
+INFO: on_manual_timing_control enter
+INFO: on_recv: 0
+1000: motor data(1001.000000, 1002.000000, 1003.000000)
+INFO: on_recv: 0
+2000: motor data(1002.000000, 1003.000000, 1004.000000)
+INFO: on_recv: 0
+3000: motor data(1003.000000, 1004.000000, 1005.000000)
 ```
 
 端末B：制御側
 
 ```sh
-1000000: pos data(1.000000, 2.000000, 3.000000)
-3000000: pos data(2.000000, 3.000000, 4.000000)
-5000000: pos data(3.000000, 4.000000, 5.000000)
-7000000: pos data(4.000000, 5.000000, 6.000000)
-9000000: pos data(5.000000, 6.000000, 7.000000)
-11000000: pos data(6.000000, 7.000000, 8.000000)
-13000000: pos data(7.000000, 8.000000, 9.000000)
-15000000: pos data(8.000000, 9.000000, 10.000000)
-17000000: pos data(9.000000, 10.000000, 11.000000)
-19000000: pos data(10.000000, 11.000000, 12.000000)
-21000000: pos data(11.000000, 12.000000, 13.000000)
+INFO: asset(Reader) is registered.
+WAIT START
+INFO: HakoMasterData::load() called: master_ext_ = 0x55a46287fd20
+INFO: HakoProData::on_pdu_data_load()
+INFO: HakoProData::on_pdu_data_load() loaded memory
+LOADED: PDU DATA
+INFO: PDU is created successfully!
+WAIT RUNNING
+PDU CREATED
+INFO: start simulation
+INFO: on_manual_timing_control enter
+INFO: on_recv: 1
+1000: pos data(1.000000, 2.000000, 3.000000)
+INFO: on_recv: 1
+2000: pos data(2.000000, 3.000000, 4.000000)
+INFO: on_recv: 1
+3000: pos data(3.000000, 4.000000, 5.000000)
 ```
 
 次に、以下のコマンドで、シミュレーションを停止およびリセットします。
@@ -135,12 +161,8 @@ hako-cmd reset
 ```sh
 NOT RUNNING: curr = 3
 WAIT STOP
-INFO: my_on_reset enter
-INFO: sleep 1sec
-INFO: my_on_reset exit
-INFO: stopped simulation
-INFO: hako_asset_start() returns 4
+WAIT RESET
 EVENT: reset
+INFO: on_manual_timing_control exit
+INFO: hako_asset_start() returns 0
 ```
-
-
